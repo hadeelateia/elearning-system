@@ -1,0 +1,329 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage[a4paper,width=5.5in]{geometry}
+\usepackage[bookmarks=true,bookmarksopen=true,bookmarksnumbered=true,
+           pdfborder={0 0 0},colorlinks=true,linkcolor=blue]
+           {hyperref}
+\usepackage{wrapfig}
+\usepackage[pdftex]{graphicx} 
+\usepackage{romanian}
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\cfoot{\thepage\ of \pageref{LastPage}}
+\lhead{Titlul Lucrarii de licenta}
+\rhead{Autorul lucrarii de licenta}
+\rightmark
+\renewcommand{\sectionmark}[1]{\markright{#1}{}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
+\begin{document}
+
+\begin{titlepage}
+
+\begin{center}
+
+
+% Upper part of the page
+\includegraphics[width=0.5\textwidth]{Screenshot.png}\\[1cm]    
+
+\textsc{\LARGE Nume student}\\[0.5cm]
+
+
+\vfill 
+% Title
+\HRule \\[0.4cm]
+{ \huge \bfseries Titlul lucrarii de licenta}\\[0.4cm]
+
+\HRule \\[1.5cm]
+
+% Author and supervisor
+
+\begin{flushleft} \large
+\emph{Coordonator} \textsc{Prof. Dr. Viorel Negru}
+\end{flushleft}
+
+\begin{flushleft} \large
+\emph{Co-Tutel'a} \textsc{Asist. Drd. Ovidiu Aritoni}
+\end{flushleft}
+
+\begin{flushleft} \large
+\emph{Available at:} \htmladdnormallink {http://web.info.uvt.ro/$\sim$numesite} {http://web.info.uvt.ro/~oaritoni} 
+\end{flushleft}
+\vfill
+% Bottom of the page
+{\large Universitatea de Vest din Timi'soara \\ 2011}
+
+\end{center}
+
+\end{titlepage}
+
+\newpage
+
+\textbf{General Overview}
+
+  The program takes as input a file containing timestamps and values
+  and outputs 2 files with patterns and their timestamps,
+  respectively pattern frequencies and their time intervals.
+
+  Javadoc (API) is in the \verb/help/ folder.
+
+  The main class is \verb/Patters/, which is \verb/public/.
+
+  To compile, type: \verb/javac Patterns.java/
+
+  To run, type: \verb/java Patterns inputFile [patternLength]/
+
+  \verb/inputFile/ and \verb/patternLength/ are command line arguments.
+  Only the input file (the first argument) is mandatory, the other one is optional.
+  If you specify two command line arguments, the first is the input file
+  and the second is the pattern length.
+  If you specify no argument or more than two, the usage message is displayed:
+
+  \noindent
+  \verb/Usage: java Patterns inputFile [patternLength]/
+
+  \noindent
+  and the program exits.
+
+  The pattern length must be an integer greater than or equal to 2.
+  This argument is optional, so it has a default value specified in the
+  program: 5.
+\\
+\\
+\textbf{Responsible:} Ovidiu Aritoni 
+\\
+\\
+\textbf{Team Members:} Ovidiu Aritoni, Ionel Popescu, Alice Aritoni. 
+\\ 
+\\
+\textbf{Versions}
+\\
+\\
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Version & Author & Description & Date\tabularnewline
+\hline
+\hline 
+1.0 & Ovidiu Aritoni & The first overview. & 15.10.2010\tabularnewline
+\hline
+\end{tabular}
+\\
+\\
+\\
+\textbf{Approved, }
+\newpage 
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\newpage
+\section{How the program works}
+
+  The program source code is contained within the file \verb/Patterns.java/
+  The name of the file is the same as the name of the public class in it,
+  except for the extension.
+  
+  There are 3 classes defined in this file: \verb/Patt/ describing a pattern,
+  \verb/Freq/ for frequencies, and the main class \verb/Patterns/. The first 2 classes
+  have \verb/package/ access, while the last is \verb/public/.
+  
+  \subsection{Patt class}
+  
+  The \verb/Patt/ class holds data relevant to a pattern (timestamps and values).
+  Each pattern has the following fields and methods:
+  
+  \noindent
+  Fields:
+  \begin{itemize}
+   \item an \verb/id/ (an \verb/integer/), starting with 1.
+   \item \verb/patternLength/, the length of the pattern, initialized with a default
+    value in the \verb/main()/ method of \verb/Patterns/ or provided as a command line argument
+    (optional). The value for the pattern length provided on the command line overrides
+    the default value.
+   \item timestamps:
+    \begin{itemize}
+     \item \verb/startTimestamps/, a \verb/List/ of \verb/String/s representing the start
+      timestamps for each time the pattern is encountered in the input file;
+     \item \verb/endTimestamps/, also a \verb/List/ of \verb/String/s, this time representing
+      the timestamps for each last value (out of \verb/patternLength/ values that compose a pattern)
+      for that pattern.
+    \end{itemize}
+    These types of timestamps are in equal number and provide a framework for the appearances of
+    the pattern in the input file. The timestamps appear at roughly regular intervals in the input
+    file (tens of seconds or minutes). Knowing the start and end times for each appearance of the
+    pattern (and eventually the pattern length), we can easily extract the timestamps and trace out
+    the evolution for each pattern.
+   \item the \verb/values/ that compose the pattern (in \verb/patternLength/ number), which are
+    concatenated here to be easier to print them (or write them in a file). It's also easier and
+    faster to compare 2 \verb/String/s than \verb/patternLength/ \verb/integer/s. These \verb/values/
+    are used to compare patterns to determine when a new pattern appears (see below the \verb/main()/
+    method of the public class \hyperlink{patt}{Patterns}).
+  \end{itemize}
+  
+  \noindent
+  Methods:
+  \begin{itemize}
+   \item There is only one constructor, which has arguments (non-default constructor) that
+    initialize the private fields \verb/id/ and \verb/patternLength/.
+   \item There are getters and setters for all the fields, except for \verb/patternLength/,
+    which cannot be modified after it is initialized in the constructor.
+   \item There are also 2 methods that add a new start, respectively end timestamp.
+   \item The method \verb/toString()/ overrides the corresponding method of the extended class
+    \verb/java.lang.Object/. The method returns the fields along with some relevant messages
+    for each.
+  \end{itemize}
+
+  \subsection{Freq class}
+  
+  The \verb/Freq/ class represents the frequency of a pattern.
+  It has the following fields and methods:
+  
+  \noindent
+  Fields:
+  \begin{itemize}
+   \item \verb/pattID/, the pattern ID to which the current frequency object is connected.
+   \item \verb/freq/, the frequency in absolute value of the pattern (how many times the pattern
+    appeared in the input file).
+   \item timestamps:
+    \begin{itemize}
+     \item \verb/startTime/, the start timestamp for the first encounter of the pattern
+      in the input file;
+     \item \verb/endTime/, the end timestamp for the last encounter of the pattern
+      in the input file.
+    \end{itemize}
+    These 2 timestamps provide a framework for all the appearances of the pattern in the input file.
+  \end{itemize}
+  
+  \noindent
+  Methods:
+  \begin{itemize}
+   \item There is only one constructor, which has an argument (non-default constructor) that
+    initializes the private field \verb/pattID/.
+   \item There are getters and setters for all the fields.
+   \item There is also a method that increments the frequency.
+   \item The method \verb/toString()/ overrides the corresponding method of the extended class
+    \verb/java.lang.Object/. The method returns the fields along with some relevant messages
+    for each.
+  \end{itemize}
+
+  \hypertarget{patt}{\subsection{Patterns main class}}
+  
+  The \verb/public/ class \verb/Patterns/ is the main class of the program.
+  Is the only class with a \verb/main()/ method. Besides this, it has one other method,
+  \verb/writeFile()/, which is used to generate the 2 output files, for patterns, respectively
+  frequencies.
+  
+  \noindent
+  The input file is read one line at a time, which is split in 2 tokens:
+  \begin{itemize}
+   \item the timestamp (a \verb/String/) and
+   \item the value (an \verb/integer/).
+  \end{itemize}
+
+  The splitting is done with the method \verb/split()/ of \verb/java.lang.String/, which
+  receives a regular expression as an argument. In our case, the line read from the file
+  is split around comma, which separates the timestamp and the value.
+  
+  The timestamps and the values are put in 2 lists: \verb/timestamps/, respectively
+  \verb/pattValues/. These will be used to initialize the data in the patterns and
+  frequencies objects and to work easier with other objects that contain only indices
+  in the above lists.
+  
+  Patterns and frequencies are organized each in a \verb/TreeMap/ to be kept sorted,
+  where the keys are starting timestamps (represented as \verb/integer/s that are
+  indices in the \verb/timestamps/ list). The point of this is that the patterns may not
+  be discovered in the order they appear in the input file: pattern 3 might be discovered
+  after 1, etc. A pattern is found when there is a match of \verb/patternLength/ values
+  in the input file: the same \verb/patternLength/ values repeat.
+  
+  As an example, let's say the input file contains values in the following order:
+  \verb/5 7 8 2 4 3 1 2 0 2 4 3 5 7 8/. Let's also assume the pattern length is 3.
+  Then, the pattern \verb/5 7 8/ (although the first appearing in the file) is found after
+  \verb/2 4 3/. This happens because \verb/2 4 3/ is the first sequence of 3 digits that repeats.
+  As such, the repetition of \verb/5 7 8/ is found after it.
+  
+  The \verb/TreeMap/ holding the patterns (the same applies to frequencies) is kept sorted
+  after the keys representing the position of the first starting timestamp. In our example,
+  the 2 starting timestamps would have the positions 3, respectively 0 in the \verb/timestamps/
+  \verb/List/ (positions start at 0). In the \verb/TreeMap/, they would be kept sorted, such that
+  the pattern with ID 1 (the first discovered, \verb/2 4 3/, with starting timestamp on position 3)
+  appears after the pattern with ID 2 (\verb/5 7 8/, the second found, with starting timestamp
+  on position 0).
+  
+  At the end, the IDs of the patterns must be changed to reflect the order the patterns appear in
+  the input file. In our example, the pattern \verb/5 7 8/, the first in the \verb/TreeMap/ as it
+  has the starting timestamp on position 0, would change the ID from 2 to 1, and the pattern
+  \verb/2 4 3/ would correspondingly get the ID 2.
+  
+  This is done in the \verb/main()/ method of \verb/Patterns/ just before calling the method
+  \verb/writeFile()/ at the end of it.
+  
+  The patterns are found by matching the last value of the pattern. The condition for finding
+  patterns is that the last value of the pattern must be at least on position \verb/patternLength-1/.
+  A counter is used to keep track of the lines read from the input file.
+  The counter is initialized with 0 and incremented after each line is read and processed.
+  As such, after reading \verb/patternLength/ lines, it has the value \verb/patternLength/.
+  
+  To have at least a repeating pattern, the counter must be at least 2 times the pattern length.
+  Besides, between the repeating values must be at least the distance \verb/patternLength/.
+  
+  Considering the previous conditions are fulfilled, all equal values are compared.
+  The \verb/values/ \verb/TreeMap/ holds the values and their positions.
+  The values to be compared are taken from the \verb/List/ \verb/pattValues/.
+  If the values are not equal, they are just added to the \verb/TreeMap/ \verb/values/ and
+  the counter is incremented.
+  In our example, the first repeating value is 2, found on positions 3 and 7.
+  
+  Then the previous values are compared in the limit \verb/patternLength/. In our case,
+  the previous values are 8 and 1, found on positions 2, respectively 6. These are not equal,
+  so we move on, as we didn't find a pattern. 
+ 
+  Next, we compare 2 on position 9 with 2 on position 3 (between 2 on position 9 and 2 on
+  position 7 there is not enough room for a pattern: $9-7=2<3$, the pattern length).
+  Again, no match, as the previous values are different (0 on position 8, compared with 8 on
+  position 2).
+  
+  The next repeating value is 4, on positions 10 and 4. The previous values are both 2 (on
+  positions 9 and 3), but the pattern length is 3, so we need one more value to find a pattern.
+  The previous values are 0 and 8, on positions 8, respectively 2, so again no match.
+  
+  We stop at the next repeating value, 3, where we have a match: 3 on positions 11 and 5,
+  4 on positions 10 and 4, and 2 on positions 9 and 3. The found pattern is \verb/2 4 3/.
+  
+  These values are stored in an array of \verb/integer/s initialized from the end to the beginning
+  as the values are found: 3, 4, 2. The array is used to build a \verb/String/ using a
+  \verb/StringBuilder/. These are used for efficiency. The result is turned into a \verb/String/
+  by calling the method \verb/toString()/ of the \verb/StringBuilder/ object (inherited from
+  \verb/java.lang.Object/).
+  
+  After a pattern is found, it is compared with existing patterns, stored in the \verb/TreeMap/
+  \verb/pattMap/. In order to compare the patterns, these are extracted from the map by calling
+  the method \verb/values()/, which returns a \verb/Collection/ of the values held in the map,
+  in our case patterns (\verb/Patt/ objects). This is \verb/pattList/.
+  
+  The found pattern is compared with those in the list by comparing the values each holds.
+  These values are stored concatenated as a \verb/String/ in the \verb/values/ field, accessible
+  by calling the corresponding getter method.
+  
+  If a match is found, the frequency of that pattern is incremented (provided the start timestamp
+  of the last time the pattern is met is newer than the end timestamp of the previous time the
+  pattern was encountered) -- in the corresponding \verb/Freq/ object, that with the same ID as
+  the pattern (\verb/Patt/) object. The frequency object is updated with the last end timestamp,
+  and the new start and end timestamps are added to the pattern object as well.
+  
+  If the pattern is new, it is added to the map, along with the corresponding timestamps
+  and a frequency object is added as well to the frequency map \verb/freqMap/.
+  First, the pattern has frequency 2, which is also the condition to discover a pattern:
+  to repeat once.
+
+ % \section{Output patterns}
+
+ 
+
+ % \section{Output pattern frequencies}
+
+ 
+
+\end{document}
